@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## **Loading and preprocessing the data**
@@ -12,7 +7,8 @@ output:
 1. Load data file from the working directory (make sure data filr is present in working directory).
 2. Assign it to a variable called "file".
 
-```{r Load Data}
+
+```r
 file=read.csv("activity.csv", header=T)
 ```
 
@@ -26,7 +22,8 @@ file=read.csv("activity.csv", header=T)
     * Mean and median are plotted on the histogram and values indicated in the legend
     * Mean and median values are very close for this data set so lines are overlapping on the graph
 
-```{r Mean Total Numbers of Steps Per Day}
+
+```r
 steps=aggregate(steps ~ date, data = file, FUN = sum)
 
       mean_steps=round(mean(steps$steps),1)
@@ -47,11 +44,14 @@ hist(steps$steps, breaks = 20,
           )
 ```
 
+![](PA1_template_files/figure-html/Mean Total Numbers of Steps Per Day-1.png) 
+
 
 
 ## **What is the average daily activity pattern?**
 
-```{r Average Daily Activity Pattern}
+
+```r
 ##Calculate average per time interval      
 number.interval <- aggregate(steps ~ interval, data = file, FUN = mean)
       
@@ -82,12 +82,15 @@ legend("topright",
 )
 ```
 
+![](PA1_template_files/figure-html/Average Daily Activity Pattern-1.png) 
+
 
 ## **Imputing missing values**
 * I will use the means for the 5-minute intervals calculated earlier to fill for the missing values
 * Create a new dataset that is equal to the original dataset but with the missing data filled in
 
-```{r Imputing missing values }
+
+```r
 ##Merge dataframe  created earlier that summarizes the average number of steps per interval to the original dataset
 activity_Impute <- merge(file, number.interval, by = "interval", suffixes = c("", ".AVG"))
 
@@ -99,7 +102,8 @@ activity_Impute <- activity_Impute[, c(1:3)]
 
 ###*Create histogram using imputed data and calculate mean and median total number of steps taken per day*
 
-```{r Mean Total Numbers of Steps Per Day After Imputing}
+
+```r
 steps2=aggregate(steps ~ date, data = activity_Impute, FUN = sum)
 
 mean_steps2=round(mean(steps2$steps),1)
@@ -118,13 +122,15 @@ legend('topright', lty = 1, lwd = 3, col = c("blue", "red"),
        legend = c(paste('Mean: ', mean_steps2),
                   paste('Median: ', median_steps2))
 )
-
 ```
+
+![](PA1_template_files/figure-html/Mean Total Numbers of Steps Per Day After Imputing-1.png) 
 
 ## **Are there differences in activity patterns between weekdays and weekends?**
 
 
-```{r Activity Pattern Between Weekdays and Weekends, fig.height=10}
+
+```r
 ##Create a new factor variable in the dataset with two levels -- "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 day_type <- function(date) {
   if (weekdays(as.Date(date)) %in% c("Saturday", "Sunday")) {
@@ -144,4 +150,6 @@ for (type in c("Weekend", "Weekday")) {
   plot(steps_type, type = "l", col= "blue", main = type, xlab = "Interval", ylab = "Number of Steps")
 }
 ```
+
+![](PA1_template_files/figure-html/Activity Pattern Between Weekdays and Weekends-1.png) 
 
